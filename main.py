@@ -1,3 +1,4 @@
+import numpy as np
 from scipy.stats import entropy
 from sklearn.datasets import fetch_20newsgroups
 

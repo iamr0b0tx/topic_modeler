@@ -19,3 +19,5 @@ git commit -m %commit_msg%
 
 echo -----------------git push--------------------------
 git push
+
+python main.py

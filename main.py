@@ -28,9 +28,6 @@ def main():
     # for topic in label_classes:
     #     show_topwords(word_network, topic=topic)
 
-    print("\nBuilding Recursive Topic Model\n" + "="*30)
-    word_network.build_topic_model()
-
     print("\nEvaluation\n" + "="*30)
     test_accuracy, test_accuracy1 = word_network.infer_topic(test_docs, test_labels)
     print(f"test_accuracy {test_accuracy*100:.2f}%, recursive => {test_accuracy1*100:.2f}%")

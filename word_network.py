@@ -13,7 +13,6 @@ class WordNetwork:
     def __init__(self, topics):
         self.word_nodes = {}
         self.topic_nodes = {}
-        self.topic_model = {}
 
         self.topics = topics
 
@@ -66,25 +65,6 @@ class WordNetwork:
 
         return co_occurence_ratio
 
-    def build_topic_model(self):
-        self.topic_model = {}
-
-        for word in tqdm(self.word_nodes):
-            word_co_occurence_ratio = self.get_co_occurence(word=word)
-
-            self.topic_model[word] = defaultdict(float)
-            
-            for other_word in word_co_occurence_ratio:
-                factor = word_co_occurence_ratio.get(other_word)
-                
-                for topic in self.topics:
-                    topic_co_occurence_ratio = self.get_co_occurence(topic=topic)
-
-                    confidence = factor * topic_co_occurence_ratio.get(other_word, 0)
-                    if confidence > self.topic_model[word][topic]:
-                        self.topic_model[word][topic] = confidence
-        return
-
     def train(self, clean_docs, labels):
         for doc_index in tqdm(range(len(clean_docs))):
             clean_doc = clean_docs[doc_index]
@@ -114,15 +94,17 @@ class WordNetwork:
                 topic_co_occurence_ratio = self.get_co_occurence(topic=topic)
                 
                 for word in doc_words:
-                    # word_co_occurence_ratio = self.get_co_occurence(word=word)
-                
+                    
                     confidence = topic_co_occurence_ratio.get(word, 0)
                     if confidence > topics[topic]:
                         topics[topic] = confidence
                     
-                    confidence1 = self.topic_model[word][topic]
-                    if confidence1 > topics1[topic]:
-                        topics1[topic] = confidence1
+                    word_co_occurence_ratio = self.get_co_occurence(word=word)
+
+                    for other_word in word_co_occurence_ratio:
+                        confidence1 = word_co_occurence_ratio.get(other_word, 0) * topic_co_occurence_ratio.get(other_word, 0)
+                        if confidence1 > topics1[topic]:
+                            topics1[topic] = confidence1
 
             if labels is not None:
                 score += int(topics.most_common(1)[0][0] == labels[doc_index])

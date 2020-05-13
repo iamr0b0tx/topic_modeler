@@ -1,5 +1,5 @@
 @ECHO OFF
-title Running WordNetword ...
+title Running WordNetwork ...
 cls
 
 py main.py

@@ -6,8 +6,8 @@ import numpy as np
 from sklearn.datasets import fetch_20newsgroups
 
 def calculate_trust_factor(x):
-    return 1 / (1 + (np.e**-x))
-    # return x / (x + 1)
+    # return 1 / (1 + (np.e**-x))
+    return x / (x + 1)
 
 # clean out the new line characters from text in docs
 def clean_document(doc):
@@ -15,7 +15,7 @@ def clean_document(doc):
 
     unwanted_chrs = [')', '(', '{', '}', '\t', '\n', '\r', "'", '"', "!", ".", ":", "-", ".", ","]
     # unwanted_chrs = string.punctuation
-    
+
     doc = doc.lower()
     for unwanted_chr in unwanted_chrs:
         # doc = re.sub(f"{unwanted_chr}+", " ", doc)

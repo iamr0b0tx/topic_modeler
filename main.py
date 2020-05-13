@@ -29,8 +29,12 @@ def main():
     #     show_topwords(word_network, topic=topic)
 
     print("\nEvaluation\n" + "="*30)
-    test_accuracy, test_accuracy1 = word_network.infer_topic(test_docs, test_labels)
-    print(f"test_accuracy {test_accuracy*100:.2f}%, recursive => {test_accuracy1*100:.2f}%")
+    
+    train_accuracy = word_network.infer_topic(train_docs, train_labels)
+    print(f"train_accuracy {train_accuracy*100:.2f}%\n")
+
+    test_accuracy = word_network.infer_topic(test_docs, test_labels)
+    print(f"test_accuracy {test_accuracy*100:.2f}%")
 
 if __name__ == "__main__":
     main()

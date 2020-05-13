@@ -1,3 +1,6 @@
+# from std lib
+import re, string
+
 # from thrid party
 import numpy as np
 from sklearn.datasets import fetch_20newsgroups
@@ -10,9 +13,12 @@ def calculate_trust_factor(x):
 def clean_document(doc):
     ''' remove unwanter characters line new line '''
 
-    unwanted_chrs = [')', '(', '{', '}', '\t', '\n', '\r', "'", '"', "!"]
+    unwanted_chrs = [')', '(', '{', '}', '\t', '\n', '\r', "'", '"', "!", ".", ":", "-", ".", ","]
+    # unwanted_chrs = string.punctuation
+    
     doc = doc.lower()
     for unwanted_chr in unwanted_chrs:
+        # doc = re.sub(f"{unwanted_chr}+", " ", doc)
         doc = doc.replace(unwanted_chr, ' ')
 
     return doc.strip()

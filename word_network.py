@@ -80,7 +80,6 @@ class WordNetwork:
 
     def infer_topic(self, docs, labels=None):
         score = accuracy = 0
-        score1 = accuracy1 = 0
         num_of_docs = len(docs)
 
         for doc_index in tqdm(range(num_of_docs)):
@@ -88,7 +87,6 @@ class WordNetwork:
             doc_words = list(set(doc.split()))
 
             topics = Counter({label_class:0 for label_class in self.topics})
-            topics1 = Counter({label_class:0 for label_class in self.topics})
 
             for topic in topics:
                 topic_co_occurence_ratio = self.get_co_occurence(topic=topic)
@@ -98,20 +96,11 @@ class WordNetwork:
                     confidence = topic_co_occurence_ratio.get(word, 0)
                     if confidence > topics[topic]:
                         topics[topic] = confidence
-                    
-                    word_co_occurence_ratio = self.get_co_occurence(word=word)
-
-                    for other_word in word_co_occurence_ratio:
-                        confidence1 = word_co_occurence_ratio.get(other_word, 0) * topic_co_occurence_ratio.get(other_word, 0)
-                        if confidence1 > topics1[topic]:
-                            topics1[topic] = confidence1
 
             if labels is not None:
                 score += int(topics.most_common(1)[0][0] == labels[doc_index])
-                score1 += int(topics1.most_common(1)[0][0] == labels[doc_index])
         
         if num_of_docs:
             accuracy = score / num_of_docs
-            accuracy1 = score1 / num_of_docs
 
-        return accuracy, accuracy1
+        return accuracy

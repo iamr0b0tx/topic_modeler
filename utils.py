@@ -3,7 +3,12 @@ import re, string
 
 # from thrid party
 import numpy as np
+
+from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
 from sklearn.datasets import fetch_20newsgroups
+
+wordnet_lemmatizer = WordNetLemmatizer()
 
 def sigmoid(x):
     return 1 / (1 + (np.e**-x))
@@ -50,7 +55,14 @@ def clean_doc(doc):
     for unwanted_chr in unwanted_chrs:
         doc = doc.replace(unwanted_chr, ' ')
 
-    return doc.strip()
+    doc = word_tokenize(doc)
+
+    word_count = len(doc)
+    doc = " ".join([wordnet_lemmatizer.lemmatize(word) for word in doc])
+
+    status = (len(doc) != 0 and not doc.isspace())
+
+    return status, doc, word_count
 
 def show_topwords(word_network, word=None, n=10, words=None):
     # if words to compared with is specified instead of topword size

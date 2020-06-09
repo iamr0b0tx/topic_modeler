@@ -4,7 +4,8 @@ import re, string
 # from thrid party
 import numpy as np
 
-from nltk import word_tokenize
+from nltk.corpus import wordnet
+from nltk import pos_tag, word_tokenize
 from nltk.stem import WordNetLemmatizer
 from sklearn.datasets import fetch_20newsgroups
 
@@ -15,6 +16,12 @@ def sigmoid(x):
 
 def gaussian(x):
     return np.e**(-x**2)
+
+def gaussian2(x):
+    return np.e**(-x)
+
+def calculate_trust_ratio(x):
+    return x / (x + 1)
 
 def build_topic_word_distr(topics, word_topic_cos, words, topic_word_window_width, word_doc_frequency):
     topic_word_distr = pd.DataFrame(data=0.0, columns=topics, index=words)
@@ -44,8 +51,16 @@ def infer_topic(label_classes, doc_vector, topic_word_distr):
     doc_topic = np.max(doc_topic_word_distr).idxmax()
     return doc_topic_word_distr, doc_topic
 
+def get_wordnet_pos(word, use_pos):
+    if not use_pos:
+        return 'n'
+
+    tag = pos_tag([word])[0][1][0].upper()
+    tag_dict = {"J": wordnet.ADJ, "N":wordnet.NOUN, "V":wordnet.VERB, "r":wordnet.ADV}
+    return tag_dict.get(tag, wordnet.NOUN)
+
 # clean out the new line characters from text in docs
-def clean_doc(doc):
+def clean_doc(doc, use_pos=False):
     ''' remove unwanter characters line new line '''
 
     unwanted_chrs = list(string.punctuation)
@@ -58,7 +73,7 @@ def clean_doc(doc):
     doc = word_tokenize(doc)
 
     word_count = len(doc)
-    doc = " ".join([wordnet_lemmatizer.lemmatize(word) for word in doc])
+    doc = " ".join([wordnet_lemmatizer.lemmatize(word, get_wordnet_pos(word, use_pos)) for word in doc])
 
     status = (len(doc) != 0 and not doc.isspace())
 

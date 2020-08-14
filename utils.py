@@ -41,14 +41,14 @@ def build_topic_word_distr(topics, word_topic_cos, words, topic_word_window_widt
         topic_word_distr[topics[topic]] = word_word_co.max(1)
     return topic_word_distr
 
-def infer_topic(label_classes, doc_vector, topic_word_distr):
+def infer_topic(label_classes, doc_vector, topic_word_distr, func=np.sum):
     doc_topic_word_distr = topic_word_distr.copy()
 
     for label_class in label_classes:
         doc_topic_word_distr[label_class] *= doc_vector
     
     
-    doc_topic = np.max(doc_topic_word_distr).idxmax()
+    doc_topic = np.sum(doc_topic_word_distr).idxmax()
     return doc_topic_word_distr, doc_topic
 
 def get_wordnet_pos(word, use_pos):
